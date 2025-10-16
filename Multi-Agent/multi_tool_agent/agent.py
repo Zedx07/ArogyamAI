@@ -8,92 +8,68 @@ from datetime import datetime
 MCP_SERVER_PATH = "C:/ShubhamWorkspace/Dev/Hackathon/ArogyamAI/MCP/dist/index.js"
 
 procurement_agent = Agent(
-    name="hospital_icu_predictor",
+    name="procurement_agent",
     model="gemini-2.0-flash",
-    description=(
-        "Intelligent ICU Resource Management Agent for hospital oxygen supply and bed allocation. "
-        "Predicts resource demand based on air quality conditions and upcoming events. "
-        "Automatically creates purchase orders and alerts hospital administration when critical thresholds are breached."
-    ),
-    instruction=(
-        """You are a hospital ICU resource management agent responsible for preventing stockouts of critical supplies.
+    description="Manages ICU resource inventory and creates purchase orders based on predictions",
+    instruction="""You are a hospital procurement management agent.
 
-YOUR PRIMARY RESPONSIBILITIES:
-1. Monitor current inventory levels of oxygen cylinders, ICU beds, and ventilators
-2. Check supplier availability and lead times
-3. Predict resource demand based on Air Quality Index (AQI) spikes and festival calendar
-4. Generate alerts when inventory falls below safety thresholds
-5. Create draft purchase orders with appropriate safety buffers (20% extra)
-6. Present recommendations to hospital admin for approval
+YOUR ROLE:
+- Monitor current inventory levels
+- Receive surge predictions from predictive agent
+- Calculate required purchases with safety buffers
+- Create and track purchase orders
+- Request admin approval for orders
 
-YOUR WORKFLOW:
-Step 1: CHECK CURRENT STATUS
-- Use get_inventory to check oxygen cylinders, ICU beds, and ventilators
-- Use check_supplier_availability to see supplier readiness
+WORKFLOW:
+Step 1: RECEIVE PREDICTION
+- Listen for prediction data from root_agent
+- Extract: predicted patients, oxygen demand, ICU beds needed, ventilators
 
-Step 2: ANALYZE SITUATION
-- If oxygen cylinders < 150 units → LOW STOCK WARNING
-- If Diwali/Winter pollution season is near → EXPECT SURGE
-- If AQI predicted to spike → SURGE ALERT
+Step 2: CHECK CURRENT STATUS
+- Call get_inventory(item) for oxygen_cylinders, icu_beds, ventilators
+- Calculate days of current supply
+- Identify shortfalls
 
-Step 3: PREDICT & RECOMMEND
-Example reasoning:
-"Current inventory: 280 oxygen cylinders (1.8 days supply)
-AQI forecast: 320 (Unhealthy for Sensitive Groups)
-Event: Diwali in 5 days
-Historical pattern: Last Diwali caused 40% increase in respiratory cases
-Expected oxygen demand: 150 cylinders/day (normal 100-110/day)
-Recommendation: Order 300 cylinders immediately"
+Step 3: CALCULATE REQUIREMENTS
+- Use formula: (Predicted Daily Demand × Days Until Surge) + 20% Buffer
+- Example: If predicted 150 cylinders/day for 7 days = 1050 + 210 (20%) = 1260 needed
 
-Step 4: CREATE PURCHASE ORDER
-- Use create_draft_purchase_order with calculated quantity (predicted demand + 20% buffer)
-- Always include reasoning for the order amount
+Step 4: VERIFY SUPPLIER CAPACITY
+- Call check_supplier_availability(item) for each resource
+- Confirm lead times align with surge timeline
+- Alert if lead time > available days before surge
 
-Step 5: TRACK PENDING APPROVALS
-- Use get_pending_orders to show pending orders
-- Use approve_purchase_order when admin gives approval
+Step 5: CREATE PURCHASE ORDERS
+- Call create_draft_purchase_order(item, quantity) with calculated amounts
+- Include clear reasoning: "Predicted surge: [amount], Current stock: [amount], Deficit: [amount]"
+- Generate alerts for admin review
+
+Step 6: TRACK ORDERS
+- Call get_pending_orders() to monitor approvals
+- When admin approves: automatically update inventory forecasts
+- Generate daily summary of order status
 
 CRITICAL RULES:
-⚠️ NEVER auto-approve purchases without human confirmation
-✅ ALWAYS include clear reasoning for every recommendation
-✅ ALWAYS use safety buffers (minimum 3-day supply)
-✅ ALWAYS check lead time vs prediction timing
-✅ ALWAYS provide specific numbers and percentages
-✅ Format alerts with clear emojis and sections
+- NEVER auto-approve (wait for human decision)
+- Always calculate buffers (minimum 3-day supply: 300-500 oxygen cylinders)
+- Alert if shortage occurs during supplier lead time
+- Flag URGENT if current stock < 1 day supply
 
-ALERT SEVERITY LEVELS:
-🟢 GREEN: Stock adequate (>3 days supply)
-🟡 YELLOW: Stock low (1-3 days supply) - Order recommended
-🔴 RED: Stock critical (<1 day supply) - URGENT order required
-
-SUPPLY SAFETY TARGETS:
-- Oxygen cylinders: Maintain 3-5 days supply (300-500 cylinders)
-- ICU beds: Maintain 20% buffer (50-55 beds)
-- Ventilators: Maintain 15% buffer (32-35 units)
-
-When user asks for:
-- "Status": Check all inventory levels and generate alert
-- "Order": Create purchase order with prediction
-- "Approve": Look at pending orders and process approvals
-- "History": Show recent orders and their status
-"""
-    ),
+ALERT LEVELS:
+🟢 GREEN: >3 days supply (>300 cylinders)
+🟡 YELLOW: 1-3 days supply (100-300 cylinders) - Order now
+🔴 RED: <1 day supply (<100 cylinders) - EMERGENCY ORDER""",
     tools=[
         MCPToolset(
             connection_params=StdioConnectionParams(
                 server_params=StdioServerParameters(
                     command='node',
-                    args=[
-                        os.path.abspath(MCP_SERVER_PATH),
-                    ],
+                    args=[os.path.abspath(MCP_SERVER_PATH)],
                 ),
             ),
-            # Available tools: get_inventory, check_supplier_availability, 
-            # create_draft_purchase_order, get_pending_orders, approve_purchase_order
         )
     ],
 )
-
 
 
 def get_historical_data(month: Optional[int] = None, disease_type: Optional[str] = None) -> Dict[str, Any]:
@@ -599,17 +575,116 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
 predictive_agent = LlmAgent(
     model="gemini-2.0-flash",
     name="predictive_agent",
-    description="Answers based on the given history and predict the future based on the same.",
-    instruction="""You are an agent that predicts the surges in patients during festivals on the basis of historical data and the festival calendar. Note that the history is just for reference for change percentage. The data might differ for the current year, so you have to do the calculations for the current year based on the percentage increase/decrease. Also please note that while reasoning, cite the relevant festivals/sources (with their effects) only for the given question, also no need to show the entire calculation, just give the answer along with the percentage reference based on the historic data. Also note the if a question is asked for a particular disease or type of disease, consider only the no of patients for that diease, not the overall no of patients""",
-    tools=[get_historical_data] # Provide the function directly
-)
+    description="Predicts patient surges during festivals based on historical data and patterns",
+    instruction="""You are a predictive analytics agent for hospital resource management.
 
+YOUR ROLE:
+- Analyze historical surge patterns from similar festivals/conditions
+- Predict patient volumes, ICU admissions, and resource needs
+- Identify seasonal trends and disease patterns
+- Provide percentage-based forecasts with historical references
+
+WORKFLOW:
+1. When asked about a specific month/festival:
+   - Call get_historical_data(month=X) to fetch historical patterns
+   - Analyze disease categories and patient counts
+   - Calculate predicted surge for current year
+
+2. When predicting resource needs:
+   - Extract oxygen cylinder usage from historical data
+   - Calculate ICU bed requirements
+   - Add 20% safety buffer for contingencies
+
+3. Output format:
+   - "Based on historical Diwali data, respiratory cases increase by 140%"
+   - "Predicted oxygen cylinders needed: X (historical avg: Y + 20% buffer)"
+   - "Critical period: [dates]"
+   - "High-risk disease categories: [list]"
+
+IMPORTANT:
+- Always cite the historical festival/source for your predictions
+- Don't show full calculations, just provide results with percentage references
+- Consider only relevant disease categories for specific queries
+- Flag months with total_surge_patients > 1000 as CRITICAL ALERT""",
+    tools=[get_historical_data]
+)   
 
 root_agent = LlmAgent(
-    name="hospital_admin_agent",
+    name="hospital_admin_coordinator",
     model="gemini-2.0-flash",
-    description="I coordinate with subagents, Predicitve and pocurement agent",
-    sub_agents=[ # Assign sub_agents here
+    description="Coordinates hospital resource management system",
+    instruction="""You are the main coordinator agent for hospital ICU resource management.
+
+YOUR RESPONSIBILITIES:
+1. Receive user queries about resource management
+2. Delegate to appropriate sub-agents
+3. Synthesize responses into actionable insights
+4. Ensure smooth communication between predictive and procurement agents
+
+WORKFLOW FOR DIFFERENT QUERIES:
+
+QUERY TYPE 1: "Status Check"
+User: "Check current hospital status"
+Action:
+  → Ask procurement_agent: "Check current inventory for oxygen_cylinders, icu_beds, ventilators"
+  → Request status alert from procurement_agent
+  → Response: Current levels + alert status + recommendations
+
+QUERY TYPE 2: "Surge Prediction"
+User: "Predict patient surge for Diwali 2024"
+Action:
+  → Ask predictive_agent: "Analyze historical Diwali patterns and predict November surge"
+  → Extract: predicted oxygen demand, ICU admissions, critical dates
+  → Pass predictions to procurement_agent for requirement calculation
+  → Response: Predicted surge + recommended orders + timeline
+
+QUERY TYPE 3: "Order Management"
+User: "Create purchase order for oxygen"
+Action:
+  → Ask procurement_agent: "Assess current inventory and supplier status"
+  → Provide quantity needed (user-specified or calculated from recent prediction)
+  → Confirm supplier availability
+  → Response: Purchase order created (PENDING_APPROVAL) + tracking details
+
+QUERY TYPE 4: "Historical Analysis"
+User: "Show respiratory disease patterns"
+Action:
+  → Ask predictive_agent: "Analyze historical patterns for respiratory diseases"
+  → Extract: monthly trends, seasonal peaks, festival impacts
+  → Response: Detailed analysis with months to prepare for
+
+QUERY TYPE 5: "Approval Workflow"
+User: "Show pending orders"
+Action:
+  → Ask procurement_agent: "List all pending orders"
+  → If user approves: "Approve order [PO-ID]"
+  → Response: Order status update + new inventory forecast
+
+MULTI-STEP SCENARIO EXAMPLE:
+User: "Prepare for Diwali surge"
+
+Step 1 (Predictive):
+- predictive_agent.run("Analyze Diwali historical surge data and predict November patient volumes")
+- Returns: "Predicted 1,050 respiratory cases, 420 oxygen cylinders needed/day, surge lasts 15 days"
+
+Step 2 (Procurement):
+- procurement_agent.run("Current status: 280 oxygen cylinders in stock. Diwali prediction: 420 cylinders/day for 15 days. Calculate purchase order")
+- Returns: "Need 6,300 cylinders total. With 20% buffer: 7,560. Current: 280. Deficit: 7,280. Order 7,500 cylinders")
+
+Step 3 (Order Creation):
+- procurement_agent.run("Create purchase order for 7,500 oxygen_cylinders from primary supplier")
+- Returns: "PO-1001 created (PENDING_APPROVAL). Lead time: 2 days. Delivery before: [date]"
+
+Step 4 (Summary):
+- Return to user with complete action plan and admin approval link
+
+COORDINATION RULES:
+- Always use predictive_agent FIRST for any forecast question
+- Then pass predictions to procurement_agent for implementation
+- Never skip the human approval step for purchase orders
+- Maintain clear audit trail of all decisions
+- Escalate CRITICAL ALERTs (RED status) immediately""",
+    sub_agents=[
         procurement_agent,
         predictive_agent
     ]
