@@ -4,17 +4,26 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const index_js_1 = require("@modelcontextprotocol/sdk/server/index.js");
 const stdio_js_1 = require("@modelcontextprotocol/sdk/server/stdio.js");
 const types_js_1 = require("@modelcontextprotocol/sdk/types.js");
-const api_clients_1 = require("./api-clients");
-const types_js_2 = require("./types.js");
+// Hardcoded demo data
+const INVENTORY = {
+    oxygen_cylinders: 280,
+    icu_beds: 45,
+    ventilators: 28,
+};
+const SUPPLIERS = {
+    oxygen_cylinders: { name: 'OxyGen Corp', lead_time_days: 2, available: 500 },
+    icu_beds: { name: 'Medical Beds Inc', lead_time_days: 5, available: 100 },
+    ventilators: { name: 'BreathTech', lead_time_days: 3, available: 50 },
+};
+const PURCHASE_ORDERS = [];
+let PO_COUNTER = 1001;
 class MCPServer {
     server;
-    apiClient;
     constructor() {
         this.server = new index_js_1.Server({
-            name: 'mcp-server-jake',
+            name: 'hospital-icu-predictor-mcp',
             version: '1.0.0',
         });
-        this.apiClient = new api_clients_1.DummyJSONClient();
         this.setupHandlers();
     }
     setupHandlers() {
@@ -22,95 +31,75 @@ class MCPServer {
         this.server.setRequestHandler(types_js_1.ListToolsRequestSchema, async () => {
             const tools = [
                 {
-                    name: 'get_users',
-                    description: 'Fetch a list of users with optional pagination and field selection',
+                    name: 'get_inventory',
+                    description: 'Get current inventory levels for hospital resources',
                     inputSchema: {
                         type: 'object',
                         properties: {
-                            limit: {
-                                type: 'number',
-                                minimum: 1,
-                                maximum: 100,
-                                default: 30,
-                                description: 'Number of users to fetch (1-100)',
-                            },
-                            skip: {
-                                type: 'number',
-                                minimum: 0,
-                                default: 0,
-                                description: 'Number of users to skip for pagination',
-                            },
-                            select: {
+                            item: {
                                 type: 'string',
-                                description: 'Comma-separated list of fields to select (e.g., "firstName,lastName,email")',
+                                enum: ['oxygen_cylinders', 'icu_beds', 'ventilators'],
+                                description: 'Type of resource to check inventory for',
                             },
                         },
+                        required: ['item'],
                     },
                 },
                 {
-                    name: 'get_user_by_id',
-                    description: 'Fetch a single user by their ID',
+                    name: 'check_supplier_availability',
+                    description: 'Check if a supplier has the item in stock and lead time',
                     inputSchema: {
                         type: 'object',
                         properties: {
-                            id: {
-                                type: 'number',
-                                minimum: 1,
-                                maximum: 208,
-                                description: 'User ID (1-208)',
-                            },
-                            select: {
+                            item: {
                                 type: 'string',
-                                description: 'Comma-separated list of fields to select',
+                                enum: ['oxygen_cylinders', 'icu_beds', 'ventilators'],
+                                description: 'Type of resource to check supplier availability for',
                             },
                         },
-                        required: ['id'],
+                        required: ['item'],
                     },
                 },
                 {
-                    name: 'search_users',
-                    description: 'Search users by query string',
+                    name: 'create_draft_purchase_order',
+                    description: 'Create a draft purchase order for hospital resources',
                     inputSchema: {
                         type: 'object',
                         properties: {
-                            q: {
+                            item: {
                                 type: 'string',
-                                minLength: 1,
-                                description: 'Search query to filter users',
+                                enum: ['oxygen_cylinders', 'icu_beds', 'ventilators'],
+                                description: 'Type of resource to order',
                             },
-                            limit: {
+                            quantity: {
                                 type: 'number',
                                 minimum: 1,
-                                maximum: 100,
-                                default: 30,
-                                description: 'Number of users to fetch',
-                            },
-                            skip: {
-                                type: 'number',
-                                minimum: 0,
-                                default: 0,
-                                description: 'Number of users to skip',
+                                description: 'Quantity to order',
                             },
                         },
-                        required: ['q'],
+                        required: ['item', 'quantity'],
                     },
                 },
                 {
-                    name: 'filter_users',
-                    description: 'Filter users by a specific key-value pair',
+                    name: 'get_pending_orders',
+                    description: 'Get all pending purchase orders awaiting approval',
+                    inputSchema: {
+                        type: 'object',
+                        properties: {},
+                    },
+                },
+                {
+                    name: 'approve_purchase_order',
+                    description: 'Approve a pending purchase order',
                     inputSchema: {
                         type: 'object',
                         properties: {
-                            filterKey: {
+                            po_id: {
                                 type: 'string',
-                                description: 'The key to filter by (e.g., "gender", "bloodGroup")',
-                            },
-                            filterValue: {
-                                type: 'string',
-                                description: 'The value to filter by',
+                                description: 'Purchase order ID to approve',
                             },
                         },
-                        required: ['filterKey', 'filterValue'],
+                        required: ['po_id'],
                     },
                 },
             ];
@@ -121,14 +110,16 @@ class MCPServer {
             const { name, arguments: args } = request.params;
             try {
                 switch (name) {
-                    case 'get_users':
-                        return await this.handleGetUsers(args);
-                    case 'get_user_by_id':
-                        return await this.handleGetUserById(args);
-                    case 'search_users':
-                        return await this.handleSearchUsers(args);
-                    case 'filter_users':
-                        return await this.handleFilterUsers(args);
+                    case 'get_inventory':
+                        return this.handleGetInventory(args);
+                    case 'check_supplier_availability':
+                        return this.handleCheckSupplierAvailability(args);
+                    case 'create_draft_purchase_order':
+                        return this.handleCreateDraftPO(args);
+                    case 'get_pending_orders':
+                        return this.handleGetPendingOrders();
+                    case 'approve_purchase_order':
+                        return this.handleApprovePO(args);
                     default:
                         throw new Error(`Unknown tool: ${name}`);
                 }
@@ -147,64 +138,144 @@ class MCPServer {
             }
         });
     }
-    async handleGetUsers(args) {
-        const validatedArgs = types_js_2.GetUsersArgsSchema.parse(args || {});
-        const result = await this.apiClient.getUsers(validatedArgs);
-        return {
-            content: [
-                {
-                    type: 'text',
-                    text: `Found ${result.total} users (showing ${result.users.length}):
-
-${JSON.stringify(result, null, 2)}`,
-                },
-            ],
-            isError: false,
-        };
-    }
-    async handleGetUserById(args) {
-        const validatedArgs = types_js_2.GetUserByIdArgsSchema.parse(args);
-        const user = await this.apiClient.getUserById(validatedArgs.id, validatedArgs.select);
-        return {
-            content: [
-                {
-                    type: 'text',
-                    text: `User ${validatedArgs.id}:
-
-${JSON.stringify(user, null, 2)}`,
-                },
-            ],
-            isError: false,
-        };
-    }
-    async handleSearchUsers(args) {
-        const validatedArgs = types_js_2.SearchUsersArgsSchema.parse(args);
-        const result = await this.apiClient.searchUsers(validatedArgs);
-        return {
-            content: [
-                {
-                    type: 'text',
-                    text: `Search results for "${validatedArgs.q}" (${result.total} matches, showing ${result.users.length}):
-
-${JSON.stringify(result, null, 2)}`,
-                },
-            ],
-            isError: false,
-        };
-    }
-    async handleFilterUsers(args) {
-        const { filterKey, filterValue } = args;
-        if (!filterKey || !filterValue) {
-            throw new Error('filterKey and filterValue are required');
+    handleGetInventory(args) {
+        const { item } = args;
+        if (!item || !INVENTORY.hasOwnProperty(item)) {
+            throw new Error(`Invalid item: ${item}. Must be one of: oxygen_cylinders, icu_beds, ventilators`);
         }
-        const result = await this.apiClient.filterUsers(filterKey, filterValue);
+        const quantity = INVENTORY[item];
+        const daysSupply = item === 'oxygen_cylinders' ? (quantity / 150).toFixed(1) : 'N/A';
         return {
             content: [
                 {
                     type: 'text',
-                    text: `Filter results for ${filterKey}="${filterValue}" (${result.total} matches, showing ${result.users.length}):
+                    text: `📦 Current Inventory for ${item.replace(/_/g, ' ')}:
+          
+Current Stock: ${quantity} units
+Days of Supply: ${daysSupply}
+Status: ${quantity < 150 ? '⚠️ LOW' : '✅ ADEQUATE'}`,
+                },
+            ],
+            isError: false,
+        };
+    }
+    handleCheckSupplierAvailability(args) {
+        const { item } = args;
+        if (!item || !SUPPLIERS.hasOwnProperty(item)) {
+            throw new Error(`Invalid item: ${item}`);
+        }
+        const supplier = SUPPLIERS[item];
+        return {
+            content: [
+                {
+                    type: 'text',
+                    text: `🏭 Supplier Information for ${item.replace(/_/g, ' ')}:
+          
+Supplier: ${supplier.name}
+Available Stock: ${supplier.available} units
+Lead Time: ${supplier.lead_time_days} days
+Status: ${supplier.available > 0 ? '✅ IN STOCK' : '❌ OUT OF STOCK'}`,
+                },
+            ],
+            isError: false,
+        };
+    }
+    handleCreateDraftPO(args) {
+        const { item, quantity } = args;
+        if (!item || !quantity || quantity < 1) {
+            throw new Error('Valid item and quantity (>= 1) required');
+        }
+        if (!SUPPLIERS.hasOwnProperty(item)) {
+            throw new Error(`Invalid item: ${item}`);
+        }
+        const poId = `PO-${PO_COUNTER++}`;
+        const supplier = SUPPLIERS[item];
+        const estimatedDelivery = new Date();
+        estimatedDelivery.setDate(estimatedDelivery.getDate() + supplier.lead_time_days);
+        const po = {
+            po_id: poId,
+            item,
+            quantity,
+            supplier: supplier.name,
+            status: 'PENDING_APPROVAL',
+            created_at: new Date().toISOString(),
+            estimated_delivery: estimatedDelivery.toISOString().split('T')[0],
+        };
+        PURCHASE_ORDERS.push(po);
+        return {
+            content: [
+                {
+                    type: 'text',
+                    text: `📋 Draft Purchase Order Created:
 
-${JSON.stringify(result, null, 2)}`,
+PO ID: ${poId}
+Item: ${item.replace(/_/g, ' ')}
+Quantity: ${quantity}
+Supplier: ${supplier.name}
+Lead Time: ${supplier.lead_time_days} days
+Estimated Delivery: ${estimatedDelivery.toISOString().split('T')[0]}
+Status: ⏳ PENDING_APPROVAL
+
+⚠️ This order is in DRAFT status. Admin must approve in dashboard.`,
+                },
+            ],
+            isError: false,
+        };
+    }
+    handleGetPendingOrders() {
+        const pendingOrders = PURCHASE_ORDERS.filter(po => po.status === 'PENDING_APPROVAL');
+        if (pendingOrders.length === 0) {
+            return {
+                content: [
+                    {
+                        type: 'text',
+                        text: '✅ No pending orders awaiting approval.',
+                    },
+                ],
+                isError: false,
+            };
+        }
+        const ordersText = pendingOrders
+            .map(po => `
+🔹 ${po.po_id}
+   Item: ${po.item.replace(/_/g, ' ')}
+   Quantity: ${po.quantity}
+   Supplier: ${po.supplier}
+   Est. Delivery: ${po.estimated_delivery}`)
+            .join('\n');
+        return {
+            content: [
+                {
+                    type: 'text',
+                    text: `📋 Pending Purchase Orders (${pendingOrders.length}):${ordersText}`,
+                },
+            ],
+            isError: false,
+        };
+    }
+    handleApprovePO(args) {
+        const { po_id } = args;
+        const po = PURCHASE_ORDERS.find(p => p.po_id === po_id);
+        if (!po) {
+            throw new Error(`Purchase order not found: ${po_id}`);
+        }
+        if (po.status !== 'PENDING_APPROVAL') {
+            throw new Error(`Order ${po_id} is already ${po.status}`);
+        }
+        po.status = 'APPROVED';
+        return {
+            content: [
+                {
+                    type: 'text',
+                    text: `✅ Purchase Order Approved:
+
+PO ID: ${po.po_id}
+Item: ${po.item.replace(/_/g, ' ')}
+Quantity: ${po.quantity}
+Status: ✅ APPROVED
+Estimated Delivery: ${po.estimated_delivery}
+
+Order has been sent to supplier.`,
                 },
             ],
             isError: false,
@@ -213,7 +284,7 @@ ${JSON.stringify(result, null, 2)}`,
     async start() {
         const transport = new stdio_js_1.StdioServerTransport();
         await this.server.connect(transport);
-        console.error('MCP Server Jake started successfully'); // Use stderr for logging
+        console.error('🏥 Hospital ICU Predictor MCP Server started successfully');
     }
 }
 // Start the server

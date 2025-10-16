@@ -133,6 +133,7 @@ export declare const UserSchema: z.ZodObject<{
         name: z.ZodString;
         title: z.ZodString;
     }, "strip", z.ZodTypeAny, {
+        name: string;
         address: {
             address: string;
             city: string;
@@ -146,9 +147,9 @@ export declare const UserSchema: z.ZodObject<{
             country: string;
         };
         department: string;
-        name: string;
         title: string;
     }, {
+        name: string;
         address: {
             address: string;
             city: string;
@@ -162,7 +163,6 @@ export declare const UserSchema: z.ZodObject<{
             country: string;
         };
         department: string;
-        name: string;
         title: string;
     }>;
     ein: z.ZodString;
@@ -183,6 +183,8 @@ export declare const UserSchema: z.ZodObject<{
     }>;
     role: z.ZodString;
 }, "strip", z.ZodTypeAny, {
+    role: string;
+    image: string;
     id: number;
     firstName: string;
     lastName: string;
@@ -194,7 +196,6 @@ export declare const UserSchema: z.ZodObject<{
     username: string;
     password: string;
     birthDate: string;
-    image: string;
     bloodGroup: string;
     height: number;
     weight: number;
@@ -226,6 +227,7 @@ export declare const UserSchema: z.ZodObject<{
         iban: string;
     };
     company: {
+        name: string;
         address: {
             address: string;
             city: string;
@@ -239,7 +241,6 @@ export declare const UserSchema: z.ZodObject<{
             country: string;
         };
         department: string;
-        name: string;
         title: string;
     };
     ein: string;
@@ -250,8 +251,9 @@ export declare const UserSchema: z.ZodObject<{
         wallet: string;
         network: string;
     };
-    role: string;
 }, {
+    role: string;
+    image: string;
     id: number;
     firstName: string;
     lastName: string;
@@ -263,7 +265,6 @@ export declare const UserSchema: z.ZodObject<{
     username: string;
     password: string;
     birthDate: string;
-    image: string;
     bloodGroup: string;
     height: number;
     weight: number;
@@ -295,6 +296,7 @@ export declare const UserSchema: z.ZodObject<{
         iban: string;
     };
     company: {
+        name: string;
         address: {
             address: string;
             city: string;
@@ -308,7 +310,6 @@ export declare const UserSchema: z.ZodObject<{
             country: string;
         };
         department: string;
-        name: string;
         title: string;
     };
     ein: string;
@@ -319,7 +320,6 @@ export declare const UserSchema: z.ZodObject<{
         wallet: string;
         network: string;
     };
-    role: string;
 }>;
 export declare const UsersResponseSchema: z.ZodObject<{
     users: z.ZodArray<z.ZodObject<{
@@ -456,6 +456,7 @@ export declare const UsersResponseSchema: z.ZodObject<{
             name: z.ZodString;
             title: z.ZodString;
         }, "strip", z.ZodTypeAny, {
+            name: string;
             address: {
                 address: string;
                 city: string;
@@ -469,9 +470,9 @@ export declare const UsersResponseSchema: z.ZodObject<{
                 country: string;
             };
             department: string;
-            name: string;
             title: string;
         }, {
+            name: string;
             address: {
                 address: string;
                 city: string;
@@ -485,7 +486,6 @@ export declare const UsersResponseSchema: z.ZodObject<{
                 country: string;
             };
             department: string;
-            name: string;
             title: string;
         }>;
         ein: z.ZodString;
@@ -506,6 +506,8 @@ export declare const UsersResponseSchema: z.ZodObject<{
         }>;
         role: z.ZodString;
     }, "strip", z.ZodTypeAny, {
+        role: string;
+        image: string;
         id: number;
         firstName: string;
         lastName: string;
@@ -517,7 +519,6 @@ export declare const UsersResponseSchema: z.ZodObject<{
         username: string;
         password: string;
         birthDate: string;
-        image: string;
         bloodGroup: string;
         height: number;
         weight: number;
@@ -549,6 +550,7 @@ export declare const UsersResponseSchema: z.ZodObject<{
             iban: string;
         };
         company: {
+            name: string;
             address: {
                 address: string;
                 city: string;
@@ -562,7 +564,6 @@ export declare const UsersResponseSchema: z.ZodObject<{
                 country: string;
             };
             department: string;
-            name: string;
             title: string;
         };
         ein: string;
@@ -573,8 +574,9 @@ export declare const UsersResponseSchema: z.ZodObject<{
             wallet: string;
             network: string;
         };
-        role: string;
     }, {
+        role: string;
+        image: string;
         id: number;
         firstName: string;
         lastName: string;
@@ -586,7 +588,6 @@ export declare const UsersResponseSchema: z.ZodObject<{
         username: string;
         password: string;
         birthDate: string;
-        image: string;
         bloodGroup: string;
         height: number;
         weight: number;
@@ -618,6 +619,7 @@ export declare const UsersResponseSchema: z.ZodObject<{
             iban: string;
         };
         company: {
+            name: string;
             address: {
                 address: string;
                 city: string;
@@ -631,7 +633,6 @@ export declare const UsersResponseSchema: z.ZodObject<{
                 country: string;
             };
             department: string;
-            name: string;
             title: string;
         };
         ein: string;
@@ -642,13 +643,15 @@ export declare const UsersResponseSchema: z.ZodObject<{
             wallet: string;
             network: string;
         };
-        role: string;
     }>, "many">;
     total: z.ZodNumber;
     skip: z.ZodNumber;
     limit: z.ZodNumber;
 }, "strip", z.ZodTypeAny, {
+    total: number;
     users: {
+        role: string;
+        image: string;
         id: number;
         firstName: string;
         lastName: string;
@@ -660,7 +663,6 @@ export declare const UsersResponseSchema: z.ZodObject<{
         username: string;
         password: string;
         birthDate: string;
-        image: string;
         bloodGroup: string;
         height: number;
         weight: number;
@@ -692,6 +694,7 @@ export declare const UsersResponseSchema: z.ZodObject<{
             iban: string;
         };
         company: {
+            name: string;
             address: {
                 address: string;
                 city: string;
@@ -705,7 +708,6 @@ export declare const UsersResponseSchema: z.ZodObject<{
                 country: string;
             };
             department: string;
-            name: string;
             title: string;
         };
         ein: string;
@@ -716,13 +718,14 @@ export declare const UsersResponseSchema: z.ZodObject<{
             wallet: string;
             network: string;
         };
-        role: string;
     }[];
-    total: number;
     skip: number;
     limit: number;
 }, {
+    total: number;
     users: {
+        role: string;
+        image: string;
         id: number;
         firstName: string;
         lastName: string;
@@ -734,7 +737,6 @@ export declare const UsersResponseSchema: z.ZodObject<{
         username: string;
         password: string;
         birthDate: string;
-        image: string;
         bloodGroup: string;
         height: number;
         weight: number;
@@ -766,6 +768,7 @@ export declare const UsersResponseSchema: z.ZodObject<{
             iban: string;
         };
         company: {
+            name: string;
             address: {
                 address: string;
                 city: string;
@@ -779,7 +782,6 @@ export declare const UsersResponseSchema: z.ZodObject<{
                 country: string;
             };
             department: string;
-            name: string;
             title: string;
         };
         ein: string;
@@ -790,9 +792,7 @@ export declare const UsersResponseSchema: z.ZodObject<{
             wallet: string;
             network: string;
         };
-        role: string;
     }[];
-    total: number;
     skip: number;
     limit: number;
 }>;
