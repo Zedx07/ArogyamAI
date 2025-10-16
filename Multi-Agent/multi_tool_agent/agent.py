@@ -63,7 +63,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "respiratory",
                     "conditions": ["Asthma", "Bronchitis", "COPD", "Pneumonia"],
                     "patient_count": 680,
-                    "surge_percentage": 51,
                     "icu_admissions": 85,
                     "oxygen_cylinders_used": 210,
                     "primary_cause": "Winter pollution + fog + crop burning residue"
@@ -72,7 +71,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "accident",
                     "conditions": ["Road accidents", "Burns", "Fractures"],
                     "patient_count": 120,
-                    "surge_percentage": 35,
                     "icu_admissions": 30,
                     "primary_cause": "Makar Sankranti kite flying accidents, Republic Day gatherings"
                 },
@@ -80,7 +78,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "gastro",
                     "conditions": ["Food poisoning", "Diarrhea"],
                     "patient_count": 95,
-                    "surge_percentage": 15,
                     "icu_admissions": 8,
                     "primary_cause": "Festival food consumption at large gatherings"
                 }
@@ -99,7 +96,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "respiratory",
                     "conditions": ["Bronchitis", "Cold", "Flu"],
                     "patient_count": 540,
-                    "surge_percentage": 29,
                     "icu_admissions": 45,
                     "oxygen_cylinders_used": 120,
                     "primary_cause": "Lingering winter pollution, temperature fluctuations"
@@ -108,7 +104,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "gastro",
                     "conditions": ["Gastroenteritis", "Food poisoning"],
                     "patient_count": 110,
-                    "surge_percentage": 25,
                     "icu_admissions": 12,
                     "primary_cause": "Fasting during Maha Shivaratri followed by heavy meals"
                 },
@@ -116,7 +111,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "accident",
                     "conditions": ["Slip and fall", "Crowd-related injuries"],
                     "patient_count": 65,
-                    "surge_percentage": 18,
                     "icu_admissions": 8,
                     "primary_cause": "Temple crowd during night-long Shivaratri prayers"
                 }
@@ -135,7 +129,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "respiratory",
                     "conditions": ["Allergic reactions", "Asthma attacks", "Eye infections"],
                     "patient_count": 520,
-                    "surge_percentage": 30,
                     "icu_admissions": 35,
                     "oxygen_cylinders_used": 90,
                     "primary_cause": "Holi colors (chemical irritants), dust, smoke from bonfires"
@@ -144,7 +137,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "skin",
                     "conditions": ["Chemical burns", "Allergic dermatitis", "Rashes"],
                     "patient_count": 280,
-                    "surge_percentage": 180,
                     "icu_admissions": 15,
                     "primary_cause": "Toxic colors, prolonged skin exposure during Holi"
                 },
@@ -152,7 +144,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "accident",
                     "conditions": ["Alcohol poisoning", "Road accidents", "Assault"],
                     "patient_count": 145,
-                    "surge_percentage": 62,
                     "icu_admissions": 38,
                     "primary_cause": "Holi celebrations, intoxication-related incidents"
                 },
@@ -160,7 +151,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "gastro",
                     "conditions": ["Food poisoning", "Alcohol-related issues"],
                     "patient_count": 130,
-                    "surge_percentage": 40,
                     "icu_admissions": 18,
                     "primary_cause": "Festival food, bhang consumption"
                 }
@@ -179,7 +169,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "heat_related",
                     "conditions": ["Heat stroke", "Dehydration", "Heat exhaustion"],
                     "patient_count": 210,
-                    "surge_percentage": 85,
                     "icu_admissions": 28,
                     "primary_cause": "Rising summer temperatures (35-42°C), outdoor religious processions"
                 },
@@ -187,7 +176,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "gastro",
                     "conditions": ["Food poisoning", "Diarrhea"],
                     "patient_count": 145,
-                    "surge_percentage": 35,
                     "icu_admissions": 15,
                     "primary_cause": "Food spoilage in heat, festival prasad distribution"
                 },
@@ -195,7 +183,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "accident",
                     "conditions": ["Crowd crushes", "Stampedes"],
                     "patient_count": 85,
-                    "surge_percentage": 40,
                     "icu_admissions": 22,
                     "primary_cause": "Large temple gatherings for Rama Navami processions"
                 }
@@ -214,7 +201,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "heat_related",
                     "conditions": ["Heat stroke", "Severe dehydration"],
                     "patient_count": 295,
-                    "surge_percentage": 110,
                     "icu_admissions": 45,
                     "primary_cause": "Peak summer heat (40-48°C in some regions)"
                 },
@@ -222,7 +208,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "infectious",
                     "conditions": ["Viral fever", "Chickenpox", "Measles"],
                     "patient_count": 165,
-                    # "surge_percentage": 50,
                     "icu_admissions": 18,
                     "primary_cause": "Pre-monsoon infections, school summer season"
                 },
@@ -230,7 +215,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "gastro",
                     "conditions": ["Acute gastroenteritis", "Food poisoning"],
                     "patient_count": 120,
-                    "surge_percentage": 28,
                     "icu_admissions": 10,
                     "primary_cause": "Bacterial growth in food due to extreme heat"
                 }
@@ -249,7 +233,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "gastro",
                     "conditions": ["Food poisoning", "Dysentery", "Cholera"],
                     "patient_count": 245,
-                    "surge_percentage": 68,
                     "icu_admissions": 28,
                     "primary_cause": "Monsoon onset, contaminated water, Eid meat consumption"
                 },
@@ -257,7 +240,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "infectious",
                     "conditions": ["Dengue early cases", "Malaria", "Leptospirosis"],
                     "patient_count": 180,
-                    # "surge_percentage": 95,
                     "icu_admissions": 32,
                     "primary_cause": "Early monsoon, mosquito breeding in stagnant water"
                 },
@@ -265,7 +247,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "accident",
                     "conditions": ["Drowning", "Electrocution", "Flood injuries"],
                     "patient_count": 90,
-                    "surge_percentage": 45,
                     "icu_admissions": 25,
                     "primary_cause": "Heavy monsoon rains, waterlogging, flooding"
                 }
@@ -284,7 +265,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "infectious",
                     "conditions": ["Dengue", "Malaria", "Typhoid", "Hepatitis A"],
                     "patient_count": 485,
-                    "surge_percentage": 128,
                     "icu_admissions": 65,
                     "oxygen_cylinders_used": 85,
                     "primary_cause": "Peak monsoon, waterborne diseases, vector-borne diseases"
@@ -293,7 +273,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "gastro",
                     "conditions": ["Cholera", "Acute diarrhea", "Dysentery"],
                     "patient_count": 310,
-                    "surge_percentage": 95,
                     "icu_admissions": 42,
                     "primary_cause": "Contaminated water sources, flooding"
                 },
@@ -301,7 +280,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "respiratory",
                     "conditions": ["Pneumonia", "Tuberculosis flare-ups"],
                     "patient_count": 195,
-                    "surge_percentage": 45,
                     "icu_admissions": 38,
                     "oxygen_cylinders_used": 95,
                     "primary_cause": "Humidity, dampness, monsoon-related respiratory issues"
@@ -310,7 +288,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "accident",
                     "conditions": ["Crowd injuries", "Stampede victims"],
                     "patient_count": 125,
-                    "surge_percentage": 55,
                     "icu_admissions": 30,
                     "primary_cause": "Rath Yatra processions in Puri, massive crowds"
                 }
@@ -329,7 +306,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "infectious",
                     "conditions": ["Dengue", "Malaria", "Chikungunya"],
                     "patient_count": 445,
-                    "surge_percentage": 115,
                     "icu_admissions": 58,
                     "oxygen_cylinders_used": 75,
                     "primary_cause": "Continued monsoon, peak mosquito season"
@@ -338,7 +314,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "gastro",
                     "conditions": ["Food poisoning", "Gastroenteritis"],
                     "patient_count": 220,
-                    "surge_percentage": 55,
                     "icu_admissions": 25,
                     "primary_cause": "Festival food during Janmashtami, monsoon contamination"
                 },
@@ -346,7 +321,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "accident",
                     "conditions": ["Fall injuries", "Fractures", "Head trauma"],
                     "patient_count": 165,
-                    "surge_percentage": 72,
                     "icu_admissions": 42,
                     "primary_cause": "Dahi Handi (human pyramid) events during Janmashtami"
                 }
@@ -365,7 +339,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "infectious",
                     "conditions": ["Dengue", "Malaria", "Leptospirosis"],
                     "patient_count": 395,
-                    "surge_percentage": 96,
                     "icu_admissions": 52,
                     "oxygen_cylinders_used": 68,
                     "primary_cause": "Late monsoon, post-flood infections"
@@ -374,7 +347,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "accident",
                     "conditions": ["Drowning", "Crowd injuries", "Electrocution"],
                     "patient_count": 245,
-                    "surge_percentage": 98,
                     "icu_admissions": 68,
                     "primary_cause": "Ganesh idol immersion in rivers/sea, massive crowds"
                 },
@@ -382,7 +354,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "gastro",
                     "conditions": ["Food poisoning", "Diarrhea"],
                     "patient_count": 185,
-                    "surge_percentage": 48,
                     "icu_admissions": 20,
                     "primary_cause": "Prasad distribution, festival meals"
                 },
@@ -390,7 +361,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "respiratory",
                     "conditions": ["Asthma", "Allergies"],
                     "patient_count": 140,
-                    "surge_percentage": 32,
                     "icu_admissions": 18,
                     "oxygen_cylinders_used": 45,
                     "primary_cause": "Idol immersion dust, post-monsoon humidity"
@@ -410,7 +380,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "respiratory",
                     "conditions": ["Asthma", "COPD", "Bronchitis"],
                     "patient_count": 595,
-                    "surge_percentage": 138,
                     "icu_admissions": 72,
                     "oxygen_cylinders_used": 185,
                     "primary_cause": "Post-monsoon pollution rise, crop burning begins, festival firecrackers"
@@ -419,7 +388,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "accident",
                     "conditions": ["Firecracker burns", "Road accidents", "Garba-related injuries"],
                     "patient_count": 285,
-                    "surge_percentage": 95,
                     "icu_admissions": 55,
                     "primary_cause": "Dussehra firecrackers, Navratri night-long Garba dances, Ravana effigy burns"
                 },
@@ -427,7 +395,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "infectious",
                     "conditions": ["Dengue late cases", "Viral fever"],
                     "patient_count": 180,
-                    "surge_percentage": 52,
                     "icu_admissions": 28,
                     "primary_cause": "Dengue season tail-end, weather transition"
                 },
@@ -435,7 +402,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "gastro",
                     "conditions": ["Food poisoning"],
                     "patient_count": 155,
-                    "surge_percentage": 38,
                     "icu_admissions": 15,
                     "primary_cause": "Festival fasting followed by heavy meals, street food"
                 }
@@ -454,7 +420,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "respiratory",
                     "conditions": ["Asthma", "COPD", "Acute bronchitis", "Pneumonia", "Respiratory failure"],
                     "patient_count": 1050,
-                    "surge_percentage": 228,
                     "icu_admissions": 145,
                     "oxygen_cylinders_used": 420,
                     "primary_cause": "CRITICAL AQI (400-500), Diwali firecrackers, winter smog, crop burning peak"
@@ -463,7 +428,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "accident",
                     "conditions": ["Firecracker burns", "Eye injuries", "Blast injuries", "Road accidents"],
                     "patient_count": 485,
-                    "surge_percentage": 155,
                     "icu_admissions": 98,
                     "primary_cause": "Diwali firecrackers, drunk driving post-parties"
                 },
@@ -471,7 +435,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "gastro",
                     "conditions": ["Food poisoning", "Acute gastritis"],
                     "patient_count": 240,
-                    "surge_percentage": 65,
                     "icu_admissions": 28,
                     "primary_cause": "Festival sweets, heavy oil-rich food, overeating"
                 },
@@ -479,7 +442,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "cardiac",
                     "conditions": ["Heart attacks", "Angina", "Cardiac arrest"],
                     "patient_count": 165,
-                    "surge_percentage": 82,
                     "icu_admissions": 85,
                     "primary_cause": "Air pollution triggering cardiac events, stress, overeating"
                 }
@@ -498,7 +460,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "respiratory",
                     "conditions": ["Bronchitis", "Pneumonia", "COPD", "Cold", "Flu"],
                     "patient_count": 795,
-                    "surge_percentage": 181,
                     "icu_admissions": 98,
                     "oxygen_cylinders_used": 285,
                     "primary_cause": "Winter pollution continues, cold weather, fog, smog"
@@ -507,7 +468,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "cardiac",
                     "conditions": ["Heart attacks", "Hypothermia-induced cardiac issues"],
                     "patient_count": 145,
-                    "surge_percentage": 68,
                     "icu_admissions": 72,
                     "primary_cause": "Cold stress on heart, pollution-related cardiac events"
                 },
@@ -515,7 +475,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "accident",
                     "conditions": ["Road accidents", "Alcohol poisoning"],
                     "patient_count": 185,
-                    "surge_percentage": 72,
                     "icu_admissions": 45,
                     "primary_cause": "New Year's Eve parties, drunk driving"
                 },
@@ -523,7 +482,6 @@ def get_historical_data(month: Optional[int] = None, disease_type: Optional[str]
                     "disease_category": "gastro",
                     "conditions": ["Food poisoning"],
                     "patient_count": 110,
-                    "surge_percentage": 28,
                     "icu_admissions": 12,
                     "primary_cause": "Christmas parties, holiday food"
                 }
